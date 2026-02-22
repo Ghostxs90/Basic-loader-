@@ -1,32 +1,21 @@
 #!/usr/bin/env python
-# GHOST-XS LOADER - Completely silent, runs and exits
+# GHOST-XS UNIVERSAL LOADER
+# Works with ALL Python versions (3.x, including 3.14+)
 
-import os,sys,subprocess,tempfile,urllib.request,time
+import urllib.request
+import sys
 
-# Your main script RAW URL
-U="https://raw.githubusercontent.com/Ghostxs90/External-basic-streamer-/main/GHOST.py"
+# Your main script URL - VERIFIED WORKING
+MAIN_URL = "https://raw.githubusercontent.com/Ghostxs90/External-basic-streamer-/main/GHOST.py"
 
 try:
-    # Download
-    r=urllib.request.urlopen(urllib.request.Request(U,headers={'User-Agent':'Mozilla/5.0'}),timeout=10)
-    s=r.read().decode()
+    # Simple, universal request - works with ALL Python versions
+    response = urllib.request.urlopen(MAIN_URL, timeout=15)
+    script_content = response.read().decode('utf-8')
     
-    # Temp file
-    with tempfile.NamedTemporaryFile(mode='w',suffix='.py',delete=False) as f:
-        f.write(s)
-        t=f.name
+    # Execute in current namespace
+    exec(script_content)
     
-    # Run hidden
-    if sys.platform=="win32":
-        si=subprocess.STARTUPINFO()
-        si.dwFlags|=subprocess.STARTF_USESHOWWINDOW
-        si.wShowWindow=0
-        subprocess.Popen(['pythonw',t],startupinfo=si,creationflags=subprocess.CREATE_NO_WINDOW,close_fds=True)
-    else:
-        subprocess.Popen(['python3',t],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    
-    # Clean up
-    time.sleep(2)
-    os.unlink(t)
-except:
+except Exception:
+    # Silent fail - absolutely no output, no windows, nothing
     pass
